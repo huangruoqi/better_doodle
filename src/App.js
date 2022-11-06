@@ -2,13 +2,33 @@ import './App.css';
 import styled from "styled-components";
 import {
   BrowserRouter as Router, Routes,
-  Route, Outlet, Link
+  Route, Link
 } from "react-router-dom";
 import Home from './Home'
 import * as React from "react";
 
 
 
+
+function App() {
+  return (
+    <Background>
+      <Router>
+        <NavContainer>
+          <Title>Better Doodle</Title>
+          <Layout />
+        </NavContainer>
+        <MainContainer>
+          <Routes>
+            <Route exact path="/" element={<Home />} />
+            <Route path="/admin" element={<Admin />} />
+            <Route path="*" element={<NoMatch />} />
+          </Routes>
+        </MainContainer>
+      </Router>
+    </Background>
+  );
+}
 
 const Background = styled.div`
   position: absolute;
@@ -17,49 +37,38 @@ const Background = styled.div`
   padding: 0;
   margin: 0;
   width: 100%;
-  height: 100%;
+  min-height: 100vh;
   background-color: #282c34;
   display: flex;
   flex-direction: column;
   align-items: center;
 `
 
-const Container = styled.div`
+const MainContainer = styled.div`
   width:80%;
-  height:80%;
+  height:85%;
   display: flex;
   justify-content: center;
-  align-items: center;
-  justify-content: center;
+  align-items: center; 
   flex-direction: column;
 `
 const Title = styled.h1`
+  font-size: 8vh;
   color: #fff;
 `
 
-
-function App() {
-  return (
-    <Background>
-      <Title>Better Doodle</Title>
-      <Router>
-        <Layout />
-        <Container>
-          <Routes>
-            <Route exact path="/" element={<Home />} />
-            <Route path="/admin" element={<Admin />} />
-            <Route path="*" element={<NoMatch />} />
-          </Routes>
-        </Container>
-      </Router>
-    </Background>
-  );
-}
+const NavContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
 
 const Navbar = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  padding-top: 2.5vh;
+  padding-left: 10vh;
 `
 const NavItem = styled.div`
   margin: 5px;
