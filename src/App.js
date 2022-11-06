@@ -1,8 +1,9 @@
 import './App.css';
 import styled from "styled-components";
-import { 
-    BrowserRouter as Router, Routes,
-    Route, Outlet, Link } from "react-router-dom";
+import {
+  BrowserRouter as Router, Routes,
+  Route, Outlet, Link
+} from "react-router-dom";
 import Home from './Home'
 import * as React from "react";
 
@@ -10,62 +11,69 @@ import * as React from "react";
 
 
 const Background = styled.div`
-    position: absolute;
-    top:0;
-    left:0;
-    padding: 0;
-    margin: 0;
-    width: 100%;
-    height: 100%;
-    background-color: #282c34;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  position: absolute;
+  top:0;
+  left:0;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #282c34;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `
 
 const Container = styled.div`
-    width:80%;
-    height:80%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
+  width:80%;
+  height:80%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
 `
 const Title = styled.h1`
-    color: #fff;
+  color: #fff;
 `
 
 
 function App() {
-    return (
-        <Background>
-            <Title>Better Doodle</Title>
-            <Router>
-                <Layout />
-                <Container>
-                    <Routes>
-                        <Route exact path="/" element={<Home />} />
-                        <Route path="/admin" element={<Admin />} />
-                        <Route path="*" element={<NoMatch />} />
-                    </Routes> 
-                </Container>
-            </Router>
-        </Background>
-    );
+  return (
+    <Background>
+      <Title>Better Doodle</Title>
+      <Router>
+        <Layout />
+        <Container>
+          <Routes>
+            <Route exact path="/" element={<Home />} />
+            <Route path="/admin" element={<Admin />} />
+            <Route path="*" element={<NoMatch />} />
+          </Routes>
+        </Container>
+      </Router>
+    </Background>
+  );
 }
 
 const Navbar = styled.div`
-    display: flex;
-    
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
+const NavItem = styled.div`
+  margin: 5px;
+  padding: 5px;
+  background-color: beige;
+  border-radius: 5px;
 `
 
 function Layout() {
   return (
-    <>
-        <Link to="/">Home</Link>
-        <Link to="/admin">Admin</Link>
-    </>
+    <Navbar>
+      <Link to="/" style={{ textDecoration: 'none' }}><NavItem>Home</NavItem></Link>
+      <Link to="/admin" style={{ textDecoration: 'none' }}><NavItem>Admin</NavItem></Link>
+    </Navbar>
   );
 }
 
