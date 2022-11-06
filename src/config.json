@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "betterdoodle",
+  "private_key_id": "d3382dfcd45da5bf1f8e7dd67d98f775c278bbd2",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCpehS8Zh7h/mFx\nZnUO5TcP8Dye6p22H0imOIRbSBz04G/OdOgFdccjQvVnOLovQNDru/Jog8+XcPlh\nA+iPhEDTCRAB6y9gXD0UTaMkyve4N6GouTaY9hZuyLe87zds2McRDJ4vWIcW7sTq\n4yrXkWt0Ax2qj1H56PSQtXq6TCNRjw+MGqPMemPC8XfueDv0fgyMzDsYOK4eRAlM\nZoQQorZ5v8IQy3OI8Uu11ckCA3eOp+OIoiVrJ1qkNOj5TSVq2JIk09MbmZVBNDYI\nTicMA9YjT66KnsJwtL8bhXJaALlY7vc9MIUXBOi9xSIAY0kuWNzH5n7GxzQBksUP\nnMJdS6ExAgMBAAECggEACMKOKtTOeNj4uW9V0qDHcVP2FjLDVyQT0b+vG7bFBGVL\nciz5xzp4whpWa/DzMrkTc3PiCkPx6X6F7V1R2oU4ApB/2tGIv97Uq2V97sts9YEu\nonV8XHiv3ScT1Di7MS2dUITJ8mGNjgJmfEukrcLO/o6grG2/C39ekNJIlzOTScZZ\nC0s7pvz476N6boYwLGkHCAxRyLC94UI3m+i2swwPdRQjQ7M9pZgaq313HwH+zg2v\ntFJ5bazRTdC88hDrU9vxVYekDke1Cfv9bgkYnAN8a6yyHIF7DiCuIW/euaRqTdLb\nPO9khRzXCs+2N3JZ3swKqBbfkkCVYLhFlRDV/4lCAQKBgQDtswzlby7qQ/TSHzUu\n5yJptx9bjaoDmrPwi9sN9EL6oxK7e6ptFWo0KZpH8iI65nvHbNX8vvsDAVDNFfxW\n8O4tgylYwpaVQxOa2Bw0AgNUxuUmb1eTapbYvDILOJcvOlasvifPdaNcaj2JckVB\nf7616E3maZ9V7+sOTkoMQkfi8QKBgQC2hmUSMd6LGI47VBu9FvC+c1RkIalWcKmc\nuqAymvmivPlnLP2ORD0MntnH/QQNTrId/0sZz7YS5L+zibKRIOjA8dmD1oRRN9MJ\nv4PvGd1oOJ/AIMAExV8jAo+ow4qRi5hmUozQCtov4+2xB0q09RRkmxZ8ZIzSXsPX\nc8rdrVciQQKBgDq9C0vLHNnRLzeZdKgBf/SFxx71s/SuDxc7SEd7e+25zJA98BCC\nwTrgqPpscF8Dw8S1NW/+tcK5WYFElJXbddATYG1JsLJz3+1cyCNl9/LEL64+x3Jr\nXZlzcB5rvphyHycS2n2ewV699jT34vtbmQIUxONSaIhxADIJ0KyU2HTRAoGAUsCx\n+ELV4/h5G9rxTJSnB6HgRBmi3cbsj1tpoCf1QFwvMyEJwEOd7ifjEzHacXIZfVIu\nqYAry3sckvi+FeB2xmugM47BpNULgGLtHS173XG2s/PlOwSFMqlJmrk1DPHeYZ3R\nq80PySCstlNZApwO5+IMms83rXU7k2YzNrgNRkECgYEA0rMUbbtB9pcDHwmjmkfD\nUZrF2+nbhW9Cwl40Lib98P6Fg2isDcXmjlru6bTg9UImmn2ScXmQ+2Y8TZgDjUsJ\nAfI5alIegQaDrMCeUIvoe9nZ5WYTuLiwXxzBGTk/MwCqAgZ8N+M3b/F87/TqKQ7v\nUlHOZeNB0rte9D/9zhkNUp4=\n-----END PRIVATE KEY-----\n",
+  "client_email": "bd-1234@betterdoodle.iam.gserviceaccount.com",
+  "client_id": "108551420051301411583",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/bd-1234%40betterdoodle.iam.gserviceaccount.com"
+}
