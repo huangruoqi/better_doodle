@@ -1,33 +1,31 @@
 import './App.css';
 import styled from "styled-components";
 import {
-  BrowserRouter as Router, Routes,
-  Route, Link
+    BrowserRouter as Router, Routes,
+    Route, Link
 } from "react-router-dom";
 import Home from './Home'
 import * as React from "react";
 
 
-
-
 function App() {
-  return (
-    <Background>
-      <Router>
-        <NavContainer>
-          <Title>Better Doodle</Title>
-          <Layout />
-        </NavContainer>
-        <MainContainer>
-          <Routes>
-            <Route exact path="/" element={<Home />} />
-            <Route path="/admin" element={<Admin />} />
-            <Route path="*" element={<NoMatch />} />
-          </Routes>
-        </MainContainer>
-      </Router>
-    </Background>
-  );
+    return (
+        <Background>
+            <Router>
+                <NavContainer>
+                    <Title>Better Doodle</Title>
+                    <Layout />
+                </NavContainer>
+                <MainContainer>
+                    <Routes>
+                        <Route exact path="/" element={<Home />} />
+                        <Route path="/admin" element={<Admin />} />
+                        <Route path="*" element={<NoMatch />} />
+                    </Routes>
+                </MainContainer>
+            </Router>
+        </Background>
+    );
 }
 
 const Background = styled.div`
@@ -43,7 +41,6 @@ const Background = styled.div`
   flex-direction: column;
   align-items: center;
 `
-
 const MainContainer = styled.div`
   width:80%;
   height:85%;
@@ -62,7 +59,6 @@ const NavContainer = styled.div`
   justify-content: center;
   align-items: center;
 `
-
 const Navbar = styled.div`
   display: flex;
   justify-content: center;
@@ -83,31 +79,31 @@ const NavItem = styled.div`
 `
 
 function Layout() {
-  return (
-    <Navbar>
-      <Link to="/" style={{ fontWeight:'bold',textDecoration: 'none', color:"black"}}><NavItem >Home</NavItem></Link>
-      <Link to="/admin" style={{fontWeight:'bold', textDecoration: 'none', color:"black"}}><NavItem >Admin</NavItem></Link>
-    </Navbar>
-  );
+    return (
+        <Navbar>
+            <Link to="/" style={{ fontWeight: 'bold', textDecoration: 'none', color: "black" }}><NavItem >Home</NavItem></Link>
+            <Link to="/admin" style={{ fontWeight: 'bold', textDecoration: 'none', color: "black" }}><NavItem >Admin</NavItem></Link>
+        </Navbar>
+    );
 }
 
 function NoMatch() {
-  return (
-    <div>
-      <h2>Nothing to see here!</h2>
-      <p>
-        <Link to="/">Go to the home page</Link>
-      </p>
-    </div>
-  );
+    return (
+        <div>
+            <h2>Nothing to see here!</h2>
+            <p>
+                <Link to="/">Go to the home page</Link>
+            </p>
+        </div>
+    );
 }
 
 function Admin() {
-  return (
-    <div>
-      <h2>Admin</h2>
-    </div>
-  );
+    return (
+        <div>
+            <h2>Admin</h2>
+        </div>
+    );
 }
 
 export default App;
