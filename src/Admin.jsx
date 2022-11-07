@@ -23,10 +23,10 @@ function getDate(date) {
   for (let i = 0; i < 7; i++) {
     const s = current.toLocaleDateString("en-US", "America/Los_Angeles")
     console.log(s, date.substring(1))
-    if (s===date.substring(1)) return i
+    if (s===date.substring(1)) return i+1
     current.setDate(current.getDate() + 1);
   }
-  return -1
+  return 0
 }
 
 const Admin = () => {
@@ -48,7 +48,7 @@ const Admin = () => {
           const ranges = []
           for (const date in table[name][time]) {
             const d = getDate(date)
-            if (d!==-1) ranges.push({date: d, time: table[name][time][date]})
+            if (d>0) ranges.push({date: d, time: table[name][time][date]})
           }
           if (output[name]===undefined) { output[name] = [] }
           output[name].push({time: time, name: name, ranges: ranges})
