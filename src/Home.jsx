@@ -25,6 +25,7 @@ function getTime(index) {
 function constructOutput(m, name) {
   const output = [];
   let start = 0;
+  const time = new Date().toLocaleString("en-US", "America/Los_Angeles")
   for (let i = 0; i < 7; i++) {
     for (let j = 0; j < 49; j++) {
       if (m[i][j] === 2) start = j;
@@ -32,6 +33,7 @@ function constructOutput(m, name) {
         output.push({
           name: name,
           date: "$" + day2date[i + 1],
+          time: time,
           from: start,
           to: j,
         });
@@ -103,6 +105,8 @@ const Home = () => {
     client.create(rows).then(
       function (data) {
         console.log(data);
+        setSelect(-1)
+        setTimeRanges(new Array(7).fill(0).map((e, i) => new Array(49).fill(0)))
       },
       function (err) {
         console.log(err);
