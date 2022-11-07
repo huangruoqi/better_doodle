@@ -18,7 +18,7 @@ function App() {
                 </NavContainer>
                 <MainContainer>
                     <Routes>
-                        <Route exact path="/better_doodle" element={<Home />} />
+                        <Route path="/better_doodle" element={<Home />} />
                         <Route path="/better_doodle/admin" element={<Admin />} />
                         <Route path="*" element={<NoMatch />} />
                     </Routes>
@@ -81,8 +81,8 @@ const NavItem = styled.div`
 function Layout() {
     return (
         <Navbar>
-            <Link to="/" style={{ fontWeight: 'bold', textDecoration: 'none', color: "black" }}><NavItem >Home</NavItem></Link>
-            <Link to="/admin" style={{ fontWeight: 'bold', textDecoration: 'none', color: "black" }}><NavItem >Admin</NavItem></Link>
+            <Link to="/better_doodle" style={{ fontWeight: 'bold', textDecoration: 'none', color: "black" }}><NavItem >Home</NavItem></Link>
+            <Link to="/better_doodle/admin" style={{ fontWeight: 'bold', textDecoration: 'none', color: "black" }}><NavItem >Admin</NavItem></Link>
         </Navbar>
     );
 }
@@ -92,7 +92,7 @@ function NoMatch() {
         <div>
             <h2>Nothing to see here!</h2>
             <p>
-                <Link to="/">Go to the home page</Link>
+                <Link to="/better_doodle">Go to the home page</Link>
             </p>
         </div>
     );
