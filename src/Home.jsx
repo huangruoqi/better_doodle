@@ -20,6 +20,24 @@ for (let i = 0; i < 7; i++) {
 function getTime(index) {
     return `${Math.floor(index/2)}:${index%2===0?"00":"30"}`
 }
+function constructOutput(m, name) {
+    const output = []
+    let start = 0
+    for (let i = 0; i < 7; i++) {
+        for (let j = 0; j < 49; j++) {
+            if (m[i][j]===2) start = j
+            if (m[i][j]===3) {
+                output.push({
+                    name: name, 
+                    date: "$"+day2date[i+1], 
+                    from: start, 
+                    to: j
+                })
+            }
+        }
+    }
+    return output
+}
 
 const Home = () => {
     const [timeRanges, setTimeRanges] = React.useState(new Array(7).fill(0).map((e,i)=>new Array(49).fill(0)))
@@ -34,12 +52,13 @@ const Home = () => {
         else{
             if (prevDate === date) {
                 if (prevTime < time) {
-                    setTimeRanges(e=>{
-                        for (let i = prevTime; i <= time ;i++){
-                            e[date][i] = 1
-                        }
-                        return e
-                    })
+                    const e = [...timeRanges]
+                    if (e[date][prevTime]===3) { e[date][prevTime] = 1 }
+                    if (e[date][prevTime]===0) { e[date][prevTime] = 2 }
+                    for (let i = prevTime+1; i < time ;i++){ e[date][i] = 1 }
+                    if (e[date][time]===0) { e[date][time] = 3 }
+                    if (e[date][time]===2) { e[date][time] = 1 }
+                    setTimeRanges(e)
                     setSelect(-1)
                 } else if (prevTime === time){
                     setSelect(-1)
@@ -55,15 +74,86 @@ const Home = () => {
         return true
     }
 
+    const submitSchedule = (name) => {
+        let rows = constructOutput(timeRanges, name)
+        console.log(rows);
+        client.create(rows).then(function (data) {
+            console.log(data);
+        }, function (err) {
+            console.log(err);
+        });
+    }
+
 
     return (
         <MainContainer>
             <DAYS ranges={timeRanges} setRange={setTimeRanges}/>
             <TIME ranges={timeRanges} select={select} chooseTime={chooseTime} />
-            <button onClick={() => console.log(JSON.parse(JSON.stringify(timeRanges)))}>alkdjfsd</button>
+            <SUBMIT submitSchedule={submitSchedule}/>
         </MainContainer>
     )
 }
+
+const SUBMIT = ({submitSchedule}) => {
+    const [name, setName] = React.useState('');
+
+    const handleChange = event => { setName(event.target.value); }
+    return (
+        <SubmitContainer>
+            <div style={{
+                fontWeight:"bold", 
+                padding:"2vh",
+                color: "#c2e97b",
+            }}>Name</div>
+            <SubmitInput onChange={handleChange}/>
+            <SubmitButton
+            onClick={() => {
+                if (name.length>0){
+                    submitSchedule(name)
+                }
+            }}
+            >SUBMIT</SubmitButton>
+        </SubmitContainer>
+    )
+
+}
+const SubmitContainer = styled.div`
+    height:10vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`
+const SubmitInput = styled.input`
+    background-color: #6aa675;
+    height: 4vh;
+    outline: none;
+    width: 20vh;
+    font-size: large;
+    border-radius: 2vh;
+    font-weight: bold;
+
+    :hover {
+        box-shadow: 0 0 2vh green;
+    }
+
+`
+const SubmitButton = styled.div`
+    height: 4.5vh;
+    border-radius: 2vh;
+    width: 8vh;
+    background-color: #81627e;
+    margin-left: 10vh;
+    font-size: small;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 900;
+    cursor: pointer;
+    :hover {
+        box-shadow: 0 0 2vh purple;
+    }
+`
 
 {/* <button onClick={() => {
     let rows = [
@@ -83,7 +173,6 @@ const MainContainer = styled.div`
   display: flex;
   justify-content: center;
   flex-direction: column;
-  padding-bottom: 10vh;
 `
 
 const DAYS = ({setRange, ranges}) => {
@@ -109,12 +198,13 @@ const TIME = ({select, ranges, chooseTime}) => {
                 <TimeRow key={i1}> { new Array(8).fill(0).map((e2, i2) => 
                     i2===0?<TimeLabel key={i2} index={i1}><div >{getTime(i1)}</div></TimeLabel>
                     :<TimeItem 
-                    key={i2} index={i1}><div style={{
-                        boxShadow: `0 0 ${(i1+(i2-1)*49)===select?2:0.5}vh green`,
-                        backgroundColor: (i1+(i2-1)*49)===select||ranges[i2-1][i1]>0?'#53c996a0':'#44a37a51'
-                    }} onClick={
-                        () => chooseTime(i2-1, i1)
-                    }></div></TimeItem>
+                    key={i2} 
+                    date={i2}
+                    time={i1} 
+                    content={getTime(i1)} 
+                    select={select}
+                    ranges={ranges}
+                    chooseTime={chooseTime} />
                 )}</TimeRow>
             ))}
         </TimeContainer>
@@ -146,6 +236,7 @@ const TimeLabel = styled.div`
         border-top-right-radius: 100%;
         border-bottom-left-radius: 100%;
         font-size: 1.5vh;
+        font-weight: bold;
         background-color: #44a37a;
         justify-content: center;
         align-items: center;
@@ -154,23 +245,64 @@ const TimeLabel = styled.div`
     }
 `
 
-const TimeItem = styled.div`
+const TimeItemDIV = styled.div`
     width:10vh;
     height:90%;
     display: flex;
     margin: 0.5vh;
     justify-content: center;
     align-items: center;
-    div{
+    .time_div{
         width:2vh;
         height:2vh;
         display: flex;
         background-color: #44a37a51;
         border-radius: 50%;
     }
-    div:hover{
+    .time_div:hover{
         cursor: pointer;
     }
+`
+const TimeItem = ({date, time, select, ranges, chooseTime}) => {
+    const i2 = date
+    const i1 = time
+    const [hovered, setHovered] = React.useState(false)
+    return (
+        <TimeItemDIV>
+            <div className="time_div" style={{
+                boxShadow: `0 0 ${(i1+(i2-1)*49)===select?2:0.5}vh green`,
+                backgroundColor: (i1+(i2-1)*49)===select?'#00fa1d9f':ranges[i2-1][i1]>0?'#53c996a0':'#44a37a51'
+            }} onClick={
+                () => chooseTime(i2-1, i1)
+            } onMouseEnter={
+                () => setHovered(true)
+            } onMouseLeave={
+                () => setHovered(false)
+            }
+            >
+                {(hovered||(i1+(i2-1)*49)===select||ranges[i2-1][i1]>1)&&
+                    <TimeStamp>
+                        {getTime(i1)}
+                    </TimeStamp>
+                }
+            </div>
+        </TimeItemDIV>
+    )
+}
+
+const TimeStamp = styled.div`
+    position: absolute;
+    /* left:4vh; */
+    width:5vh;
+    height: 3vh;
+    background-color: #57a9e86d;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 1vh;
+    font-size: 1.3vh;
+    font-weight: 900;
+    transform: translate(2.7vh, -0.5vh);
 `
 
 const DaysContainer = styled.div`
@@ -180,6 +312,7 @@ const DaysContainer = styled.div`
 `
 
 const DayItem = ({e,i, ranges, setRange}) => {
+    if (i==0) return <EmptyContainer />
     return (
         <ItemContainer onClick={() => {
                 let s = 0
@@ -188,13 +321,15 @@ const DayItem = ({e,i, ranges, setRange}) => {
                 for (let k = 0; k < 49; k++) {
                     if (m[col][k]>0) s++
                 }
-                for (let k = 0; k < 49; k++) {
-                    if (s==49) {
+                if (s==49) {
+                    for (let k = 0; k < 49; k++) 
                         m[col][k] = 0
-                    }
-                    else{
+                }
+                else {
+                    m[col][0] = 2
+                    m[col][48] = 3
+                    for (let k = 1; k < 48; k++)
                         m[col][k] = 1
-                    }
                 }
                 setRange(m)
             }}>
@@ -220,6 +355,12 @@ const ItemContainer = styled.div`
         box-shadow: 0 0 3vh dodgerblue;
         transition: 0.5s;
     }
+`
+
+const EmptyContainer = styled.div`
+    width:10vh;
+    height:10vh;
+    margin: 0.5vh;
 `
 
 const DateContainer = styled.div`
