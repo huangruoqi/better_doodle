@@ -4,11 +4,14 @@ const StyledButton = styled.div`
 box-shadow: 0 0 2vh green;
   text-decoration: none;
   font-size: 2vh;
+  width:5vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   font-weight: 700;
   color: #2abb62;
   padding: 0.3vh 2vh;
   padding-top: 0;
-  margin-left: 8vh;
   border: 0.3vh solid #1fe88e;
   position: relative;
   &::before,
@@ -38,6 +41,6 @@ box-shadow: 0 0 2vh green;
   }
 `;
 
-export default function({onClick}) { 
-  return <StyledButton onClick={onClick}>⧋</StyledButton> 
+export default function({onClick, text}) { 
+  return <StyledButton onClick={onClick}>{text}</StyledButton> 
 }

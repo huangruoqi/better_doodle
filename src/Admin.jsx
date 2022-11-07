@@ -2,17 +2,11 @@ import sheetdb from "sheetdb-node";
 import styled from "styled-components";
 import * as React from "react";
 import Button from "./Button";
-import Circle from "./Circle";
 
 var config = {
   address: "ju33yniko75pk",
 };
 var client = sheetdb(config);
-
-const mock = [
-    {name: "Ruoqi Huang", ranges:[{date:0,time:[[0,10],[20,40]]}, {date:2, time:[[10,30]]}, {date:3, time:[[0,10]]}]},
-    {name: "Bryant D", ranges:[{date:0,time:[[2,5],[31,44]]}, {date:1, time:[[10,30]]}, {date:2, time:[[0,10]]}]},
-]
 
 const date = new Date();
 const day = date.getDay();
@@ -24,16 +18,66 @@ for (let i = 0; i < 7; i++) {
   current.setDate(current.getDate() + 1);
 }
 
-function getTime(index) {
-  return `${Math.floor(index / 2)}:${index % 2 === 0 ? "00" : "30"}`;
+function getDate(date) {
+  const current = new Date();
+  for (let i = 0; i < 7; i++) {
+    const s = current.toLocaleDateString("en-US", "America/Los_Angeles")
+    console.log(s, date.substring(1))
+    if (s===date.substring(1)) return i
+    current.setDate(current.getDate() + 1);
+  }
+  return -1
 }
 
 const Admin = () => {
+  const [data, setData] = React.useState([])
+
+  const refresh = () => {
+    client.read().then(function (res) {
+      const table = {}
+      res = JSON.parse(res)
+      for (let i = 0 ; i < res.length; i++) { if (table[res[i]["name"]]===undefined) table[res[i]["name"]] = {} }
+      for (let i = 0 ; i < res.length; i++) { if (table[res[i]["name"]][res[i]["time"]]===undefined) table[res[i]["name"]][res[i]["time"]] = {} }
+      for (let i = 0 ; i < res.length; i++) { if (table[res[i]["name"]][res[i]["time"]][res[i]["date"]]===undefined) table[res[i]["name"]][res[i]["time"]][res[i]["date"]] = []}
+      for (let i = 0 ; i < res.length; i++) { table[res[i]["name"]][res[i]["time"]][res[i]["date"]].push([res[i]["from"], res[i]["to"]]) }
+
+      const output = {}
+
+      for (const name in table) {
+        for (const time in table[name]) {
+          const ranges = []
+          for (const date in table[name][time]) {
+            const d = getDate(date)
+            if (d!==-1) ranges.push({date: d, time: table[name][time][date]})
+          }
+          if (output[name]===undefined) { output[name] = [] }
+          output[name].push({time: time, name: name, ranges: ranges})
+        }
+      }
+      const final = []
+      for (const name in output) {
+        output[name].sort((a,b) => Date.parse(b.time) - Date.parse(a.time))
+        final.push(output[name][0])
+      }
+      console.log(output)
+      setData(final)
+    }, function (error) {
+      console.log(error);
+    });
+  }
+
   return (
     <MainContainer>
       <DAYS />
-      <TIME data={mock}/>
-      <h1>THIS IS MOCK DATA</h1>
+      <TIME data={data} />
+      <div style={{paddingTop:"2vh"}}>
+      <Button
+        onClick={refresh}
+        text="↺"
+      >
+      </Button>
+
+      </div>
     </MainContainer>
   );
 };
@@ -43,6 +87,7 @@ const MainContainer = styled.div`
   height: 100%;
   display: flex;
   justify-content: center;
+  align-items: center;
   flex-direction: column;
 `;
 
@@ -60,7 +105,7 @@ const DAYS = () => {
   );
 };
 
-const TIME = ({data}) => {
+const TIME = ({ data }) => {
   return (
     <TimeContainer>
       {data.map((e, i) => (
@@ -117,37 +162,37 @@ const TimeItemDIV = styled.div`
   align-items: center;
   background-color: #afbcb730;
 `;
-const TimeItem = ({time}) => {
-    const m = new Array(48).fill(false)
-    for (let i = 0; i < time.length; i++) {
-        for (let j = time[i][0]; j < time[i][1]; j++) { m[j] = true }
-    }
-    return (
-        <TimeItemDIV>
-            {m.map((e, i)=><TimeSegment key={i} available={e} />)}
-        </TimeItemDIV>
-    )
+const TimeItem = ({ time }) => {
+  const m = new Array(48).fill(false)
+  for (let i = 0; i < time.length; i++) {
+    for (let j = time[i][0]; j < time[i][1]; j++) { m[j] = true }
+  }
+  return (
+    <TimeItemDIV>
+      {m.map((e, i) => <TimeSegment key={i} available={e} />)}
+    </TimeItemDIV>
+  )
 }
 
-const TimeSegment = ({available}) => (
-    <div style={{
-        flex:1, backgroundColor:available?'#44a37a51':'transparent',height:"100%"
-    }} ></div>
+const TimeSegment = ({ available }) => (
+  <div style={{
+    flex: 1, backgroundColor: available ? '#44a37a51' : 'transparent', height: "100%"
+  }} ></div>
 )
 
-const TimeRow = ({name, ranges}) => {
-    const output = new Array(8).fill(0).map((e, i)=>([]))
-    for (let i = 0; i < ranges.length; i++) { output[ranges[i].date] = [...ranges[i].time] }
-    return (
-        <TimeRowDIV>
-            {output.map((e, i) =>
-            i === 0 ? (
-                <TimeLabel key={i}><div>{name}</div></TimeLabel>
-            ) : (
-                <TimeItem key={i} time={e} />
-            )
-            )}
-        </TimeRowDIV>
+const TimeRow = ({ name, ranges }) => {
+  const output = new Array(8).fill(0).map((e, i) => ([]))
+  for (let i = 0; i < ranges.length; i++) { output[ranges[i].date] = [...ranges[i].time] }
+  return (
+    <TimeRowDIV>
+      {output.map((e, i) =>
+        i === 0 ? (
+          <TimeLabel key={i}><div>{name}</div></TimeLabel>
+        ) : (
+          <TimeItem key={i} time={e} />
+        )
+      )}
+    </TimeRowDIV>
   );
 };
 

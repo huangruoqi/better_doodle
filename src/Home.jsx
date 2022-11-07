@@ -167,9 +167,8 @@ const SUBMIT = ({ submitSchedule }) => {
             alert("Please enter your name!!!");
           }
         }}
-      >
-        SUBMIT
-      </Button>
+        text="⧋"
+      />
     </SubmitContainer>
   );
 };
@@ -191,6 +190,7 @@ const SubmitInput = styled.input`
   font-size: large;
   border-radius: 2vh;
   font-weight: bold;
+  margin-right: 8vh;
   box-shadow: ${(props) =>
     props.name.length > 0 ? "0 0 0 green" : "0 0 2vh red"};
   :focus {
