@@ -33,6 +33,7 @@ const Admin = () => {
     <MainContainer>
       <DAYS />
       <TIME data={mock}/>
+      <h1>THIS IS MOCK DATA</h1>
     </MainContainer>
   );
 };
