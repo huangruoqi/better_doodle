@@ -216,6 +216,10 @@ const ItemContainer = styled.div`
     flex-direction: column;
     box-shadow: 0 0 1vh dodgerblue;
     cursor: pointer;
+    :hover {
+        box-shadow: 0 0 3vh dodgerblue;
+        transition: 0.5s;
+    }
 `
 
 const DateContainer = styled.div`
