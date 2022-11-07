@@ -53,9 +53,19 @@ const Home = () => {
             if (prevDate === date) {
                 if (prevTime < time) {
                     const e = [...timeRanges]
+                    let flag = e[date][prevTime]===2 && e[date][time]===3
+                    for (let i = prevTime+1; i < time; i++){ flag&=e[date][i]==1 }
+                    if (flag) {
+                        for (let i = prevTime; i <= time; i++) {
+                            e[date][i] = 0
+                        }
+                        setTimeRanges(e)
+                        setSelect(-1)
+                        return true
+                    }
                     if (e[date][prevTime]===3) { e[date][prevTime] = 1 }
                     if (e[date][prevTime]===0) { e[date][prevTime] = 2 }
-                    for (let i = prevTime+1; i < time ;i++){ e[date][i] = 1 }
+                    for (let i = prevTime+1; i < time; i++){ e[date][i] = 1 }
                     if (e[date][time]===0) { e[date][time] = 3 }
                     if (e[date][time]===2) { e[date][time] = 1 }
                     setTimeRanges(e)
@@ -129,6 +139,7 @@ const SubmitInput = styled.input`
     height: 4vh;
     outline: none;
     width: 20vh;
+    padding-left: 2vh;
     font-size: large;
     border-radius: 2vh;
     font-weight: bold;
@@ -257,7 +268,6 @@ const TimeItemDIV = styled.div`
         height:2vh;
         display: flex;
         background-color: #44a37a51;
-        border-radius: 50%;
     }
     .time_div:hover{
         cursor: pointer;
@@ -267,11 +277,14 @@ const TimeItem = ({date, time, select, ranges, chooseTime}) => {
     const i2 = date
     const i1 = time
     const [hovered, setHovered] = React.useState(false)
+    const status = ranges[i2-1][i1]
+    const index = (i1+(i2-1)*49)
     return (
         <TimeItemDIV>
             <div className="time_div" style={{
-                boxShadow: `0 0 ${(i1+(i2-1)*49)===select?2:0.5}vh green`,
-                backgroundColor: (i1+(i2-1)*49)===select?'#00fa1d9f':ranges[i2-1][i1]>0?'#53c996a0':'#44a37a51'
+                boxShadow: `0 0 ${index===select?2:0.5}vh green`,
+                backgroundColor: index===select?'#00fa1d9f':status>0?'#53c996a0':'#44a37a51',
+                borderRadius: status===0||index===select?"50%":status===1?"0":status===2?"50% 0 50% 0":"0 50% 0 50%",
             }} onClick={
                 () => chooseTime(i2-1, i1)
             } onMouseEnter={
@@ -280,7 +293,7 @@ const TimeItem = ({date, time, select, ranges, chooseTime}) => {
                 () => setHovered(false)
             }
             >
-                {(hovered||(i1+(i2-1)*49)===select||ranges[i2-1][i1]>1)&&
+                {(hovered||index===select||status>1)&&
                     <TimeStamp>
                         {getTime(i1)}
                     </TimeStamp>
@@ -292,7 +305,6 @@ const TimeItem = ({date, time, select, ranges, chooseTime}) => {
 
 const TimeStamp = styled.div`
     position: absolute;
-    /* left:4vh; */
     width:5vh;
     height: 3vh;
     background-color: #57a9e86d;
