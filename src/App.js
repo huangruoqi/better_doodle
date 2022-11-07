@@ -5,6 +5,7 @@ import {
     Route, Link
 } from "react-router-dom";
 import Home from './Home'
+import Admin from './Admin'
 import * as React from "react";
 
 
@@ -94,14 +95,6 @@ function NoMatch() {
             <p>
                 <Link to="/better_doodle">Go to the home page</Link>
             </p>
-        </div>
-    );
-}
-
-function Admin() {
-    return (
-        <div>
-            <h2>Admin</h2>
         </div>
     );
 }
