@@ -1,6 +1,8 @@
 import sheetdb from 'sheetdb-node';
 import styled from 'styled-components';
 import * as React from 'react';
+import Button from './Button'
+import Circle from './Circle'
 
 var config = {
     address: 'ju33yniko75pk',
@@ -54,7 +56,7 @@ const Home = () => {
                 if (prevTime < time) {
                     const e = [...timeRanges]
                     let flag = e[date][prevTime]===2 && e[date][time]===3
-                    for (let i = prevTime+1; i < time; i++){ flag&=e[date][i]==1 }
+                    for (let i = prevTime+1; i < time; i++){ flag&=e[date][i]===1 }
                     if (flag) {
                         for (let i = prevTime; i <= time; i++) {
                             e[date][i] = 0
@@ -110,19 +112,24 @@ const SUBMIT = ({submitSchedule}) => {
     const handleChange = event => { setName(event.target.value); }
     return (
         <SubmitContainer>
+            <div style={{display:'flex', justifyContent: 'center', alignItems: 'center', marginRight: '1vh'}} >
             <div style={{
+                position:"absolute",
                 fontWeight:"bold", 
-                padding:"2vh",
                 color: "#c2e97b",
-            }}>Name</div>
+                zIndex:2
+            }}>Name</div><Circle />
+
+            </div>
+
             <SubmitInput onChange={handleChange}/>
-            <SubmitButton
+            <Button
             onClick={() => {
                 if (name.length>0){
                     submitSchedule(name)
                 }
             }}
-            >SUBMIT</SubmitButton>
+            >SUBMIT</Button>
         </SubmitContainer>
     )
 
@@ -138,6 +145,7 @@ const SubmitInput = styled.input`
     background-color: #6aa675;
     height: 4vh;
     outline: none;
+    border: none;
     width: 20vh;
     padding-left: 2vh;
     font-size: large;
@@ -166,17 +174,7 @@ const SubmitButton = styled.div`
     }
 `
 
-{/* <button onClick={() => {
-    let rows = [
-        { name: "Ruoqi Huang", date: "11/04/2022", from: 1, to: 20 },
-        { name: "Ruoqi Huang", date: "11/05/2022", from: 10, to: 30 },
-    ]
-    // client.create(rows).then(function (data) {
-    //     console.log(data);
-    // }, function (err) {
-    //     console.log(err);
-    // });
-}}>submit</button> */}
+
 
 const MainContainer = styled.div`
   width:100%;
@@ -324,7 +322,7 @@ const DaysContainer = styled.div`
 `
 
 const DayItem = ({e,i, ranges, setRange}) => {
-    if (i==0) return <EmptyContainer />
+    if (i===0) return <EmptyContainer />
     return (
         <ItemContainer onClick={() => {
                 let s = 0
@@ -333,7 +331,7 @@ const DayItem = ({e,i, ranges, setRange}) => {
                 for (let k = 0; k < 49; k++) {
                     if (m[col][k]>0) s++
                 }
-                if (s==49) {
+                if (s===49) {
                     for (let k = 0; k < 49; k++) 
                         m[col][k] = 0
                 }

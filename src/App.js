@@ -37,7 +37,7 @@ const Background = styled.div`
   padding: 0;
   margin: 0;
   width: 100%;
-  min-height: 100vh;
+  min-height: 101vh;
   background-color: #282c34;
   display: flex;
   flex-direction: column;
@@ -75,13 +75,18 @@ const NavItem = styled.div`
   padding: 5px;
   background-color: beige;
   border-radius: 5px;
+  :hover {
+    opacity: 0.35;
+    transition: 0.5s;
+  }
+  transition: 1s;
 `
 
 function Layout() {
   return (
     <Navbar>
-      <Link to="/" style={{ textDecoration: 'none' }}><NavItem>Home</NavItem></Link>
-      <Link to="/admin" style={{ textDecoration: 'none' }}><NavItem>Admin</NavItem></Link>
+      <Link to="/" style={{ fontWeight:'bold',textDecoration: 'none', color:"black"}}><NavItem >Home</NavItem></Link>
+      <Link to="/admin" style={{fontWeight:'bold', textDecoration: 'none', color:"black"}}><NavItem >Admin</NavItem></Link>
     </Navbar>
   );
 }
