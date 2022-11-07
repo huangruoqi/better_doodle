@@ -151,30 +151,13 @@ const SubmitInput = styled.input`
     font-size: large;
     border-radius: 2vh;
     font-weight: bold;
-
+    :focus {
+        box-shadow: 0 0 2vh green;
+    }
     :hover {
         box-shadow: 0 0 2vh green;
     }
-
 `
-const SubmitButton = styled.div`
-    height: 4.5vh;
-    border-radius: 2vh;
-    width: 8vh;
-    background-color: #81627e;
-    margin-left: 10vh;
-    font-size: small;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-weight: 900;
-    cursor: pointer;
-    :hover {
-        box-shadow: 0 0 2vh purple;
-    }
-`
-
-
 
 const MainContainer = styled.div`
   width:100%;
