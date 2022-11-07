@@ -101,6 +101,10 @@ const Home = () => {
 
   const submitSchedule = (name) => {
     let rows = constructOutput(timeRanges, name);
+    if (rows.length===0) {
+        alert("Please select available time interval!!!")
+        return
+    }
     console.log(rows);
     client.create(rows).then(
       function (data) {
@@ -152,11 +156,14 @@ const SUBMIT = ({ submitSchedule }) => {
         <Circle />
       </div>
 
-      <SubmitInput onChange={handleChange} />
+      <SubmitInput onChange={handleChange} name={name} />
       <Button
         onClick={() => {
           if (name.length > 0) {
             submitSchedule(name);
+          }
+          else {
+            alert("Please enter your name!!!")
           }
         }}
       >
@@ -173,7 +180,7 @@ const SubmitContainer = styled.div`
   align-items: center;
 `;
 const SubmitInput = styled.input`
-  background-color: #6aa675;
+  background-color: ${props=>props.name.length>0?"#6aa675":"#c65757"};
   height: 4vh;
   outline: none;
   border: none;
@@ -182,11 +189,12 @@ const SubmitInput = styled.input`
   font-size: large;
   border-radius: 2vh;
   font-weight: bold;
+  box-shadow: ${props=>props.name.length>0?"0 0 0 green":"0 0 2vh red"};
   :focus {
-    box-shadow: 0 0 2vh green;
+    box-shadow: ${props=>props.name.length>0?"0 0 2vh green":"0 0 2vh red"};
   }
   :hover {
-    box-shadow: 0 0 2vh green;
+    box-shadow: ${props=>props.name.length>0?"0 0 2vh green":"0 0 2vh red"};
   }
 `;
 
