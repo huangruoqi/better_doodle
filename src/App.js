@@ -18,8 +18,8 @@ function App() {
                 </NavContainer>
                 <MainContainer>
                     <Routes>
-                        <Route exact path="/" element={<Home />} />
-                        <Route path="/admin" element={<Admin />} />
+                        <Route exact path="/better_doodle" element={<Home />} />
+                        <Route path="/better_doodle/admin" element={<Admin />} />
                         <Route path="*" element={<NoMatch />} />
                     </Routes>
                 </MainContainer>
