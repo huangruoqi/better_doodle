@@ -22,8 +22,9 @@ function getDate(date) {
   const current = new Date();
   for (let i = 0; i < 7; i++) {
     const s = current.toLocaleDateString("en-US", "America/Los_Angeles")
-    console.log(s, date.substring(1))
-    if (s===date.substring(1)) return i+1
+    if (s===date.substring(1)) {
+      return i+1
+    }
     current.setDate(current.getDate() + 1);
   }
   return 0
@@ -59,7 +60,6 @@ const Admin = () => {
         output[name].sort((a,b) => Date.parse(b.time) - Date.parse(a.time))
         final.push(output[name][0])
       }
-      console.log(output)
       setData(final)
     }, function (error) {
       console.log(error);
@@ -76,7 +76,6 @@ const Admin = () => {
         text="↺"
       >
       </Button>
-
       </div>
     </MainContainer>
   );
@@ -106,11 +105,35 @@ const DAYS = () => {
 };
 
 const TIME = ({ data }) => {
+  const table = new Array(data.length).fill(0).map(()=>new Array(8).fill(0).map(()=>new Array(48).fill(0)))
+  for (let i = 0; i < data.length; i++) {
+    const output = new Array(8).fill(0).map(() => ([]))
+    const ranges = data[i].ranges
+    for (let j = 0; j < ranges.length; j++) { output[ranges[j].date] = [...ranges[j].time] }
+    for (let j = 0; j < output.length; j++) {
+      const time = output[j]
+      for (let t = 0; t < time.length; t++) {
+        for (let k = parseInt(time[t][0]); k < parseInt(time[t][1]); k++) { table[i][j][k] = 1 }
+      }
+    }
+  }
+
+  if (data.length!==0) {
+    const summary = new Array(8).fill(0).map(()=>new Array(48).fill(1))
+    for (let i = 0; i < table.length; i++) {
+      for (let j = 0; j < 8; j++) {
+        for (let k = 0; k < 48; k++) {
+          if (table[i][j][k]===0) summary[j][k]=0
+        }
+      }
+    }
+    table.push(summary)
+  }
+
   return (
     <TimeContainer>
-      {data.map((e, i) => (
-        <TimeRow key={i} ranges={e.ranges} name={e.name}>
-        </TimeRow>
+      {table.map((e, i) => (
+        <TimeRow key={i} index={i} table={e} name={data[i]?.name||"SUMMARY"} />
       ))}
     </TimeContainer>
   );
@@ -150,10 +173,22 @@ const TimeLabel = styled.div`
   }
 `;
 
+const TimeRow = ({ name, table }) => {
+  return (
+    <TimeRowDIV>
+      {table.map((e, i) =>
+        i === 0 ? (
+          <TimeLabel key={i}><div>{name}</div></TimeLabel>
+        ) : (
+          <TimeItem table={e} key={i} />
+        )
+      )}
+    </TimeRowDIV>
+  );
+};
+
 const TimeItemDIV = styled.div`
-  width: 10vh;
-  padding-left: 0.5vh;
-  padding-right: 0.5vh;
+  width: 11vh;
   height: 90%;
   display: flex;
   margin-top: 0.5vh;
@@ -162,39 +197,22 @@ const TimeItemDIV = styled.div`
   align-items: center;
   background-color: #afbcb730;
 `;
-const TimeItem = ({ time }) => {
-  const m = new Array(48).fill(false)
-  for (let i = 0; i < time.length; i++) {
-    for (let j = time[i][0]; j < time[i][1]; j++) { m[j] = true }
-  }
+const TimeItem = ({ table }) => {
   return (
     <TimeItemDIV>
-      {m.map((e, i) => <TimeSegment key={i} available={e} />)}
+      {table.map((e, i) => <TimeSegment key={i} available={e} />)}
     </TimeItemDIV>
   )
 }
 
-const TimeSegment = ({ available }) => (
-  <div style={{
-    flex: 1, backgroundColor: available ? '#44a37a51' : 'transparent', height: "100%"
-  }} ></div>
-)
+const TimeSegment = ({ available }) => {
+    return(
+    <div style={{
+      flex: 1, backgroundColor: available ? '#44a37a51' : 'transparent', height: "100%"
+    }} ></div>
+  )
+}
 
-const TimeRow = ({ name, ranges }) => {
-  const output = new Array(8).fill(0).map((e, i) => ([]))
-  for (let i = 0; i < ranges.length; i++) { output[ranges[i].date] = [...ranges[i].time] }
-  return (
-    <TimeRowDIV>
-      {output.map((e, i) =>
-        i === 0 ? (
-          <TimeLabel key={i}><div>{name}</div></TimeLabel>
-        ) : (
-          <TimeItem key={i} time={e} />
-        )
-      )}
-    </TimeRowDIV>
-  );
-};
 
 const DaysContainer = styled.div`
   display: flex;
