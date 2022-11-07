@@ -25,7 +25,7 @@ function getTime(index) {
 function constructOutput(m, name) {
   const output = [];
   let start = 0;
-  const time = new Date().toLocaleString("en-US", "America/Los_Angeles")
+  const time = new Date().toLocaleString("en-US", "America/Los_Angeles");
   for (let i = 0; i < 7; i++) {
     for (let j = 0; j < 49; j++) {
       if (m[i][j] === 2) start = j;
@@ -101,16 +101,18 @@ const Home = () => {
 
   const submitSchedule = (name) => {
     let rows = constructOutput(timeRanges, name);
-    if (rows.length===0) {
-        alert("Please select available time interval!!!")
-        return
+    if (rows.length === 0) {
+      alert("Please select available time interval!!!");
+      return;
     }
     console.log(rows);
     client.create(rows).then(
       function (data) {
         console.log(data);
-        setSelect(-1)
-        setTimeRanges(new Array(7).fill(0).map((e, i) => new Array(49).fill(0)))
+        setSelect(-1);
+        setTimeRanges(
+          new Array(7).fill(0).map((e, i) => new Array(49).fill(0))
+        );
       },
       function (err) {
         console.log(err);
@@ -161,9 +163,8 @@ const SUBMIT = ({ submitSchedule }) => {
         onClick={() => {
           if (name.length > 0) {
             submitSchedule(name);
-          }
-          else {
-            alert("Please enter your name!!!")
+          } else {
+            alert("Please enter your name!!!");
           }
         }}
       >
@@ -180,7 +181,8 @@ const SubmitContainer = styled.div`
   align-items: center;
 `;
 const SubmitInput = styled.input`
-  background-color: ${props=>props.name.length>0?"#6aa675":"#c65757"};
+  background-color: ${(props) =>
+    props.name.length > 0 ? "#6aa675" : "#c65757"};
   height: 4vh;
   outline: none;
   border: none;
@@ -189,12 +191,15 @@ const SubmitInput = styled.input`
   font-size: large;
   border-radius: 2vh;
   font-weight: bold;
-  box-shadow: ${props=>props.name.length>0?"0 0 0 green":"0 0 2vh red"};
+  box-shadow: ${(props) =>
+    props.name.length > 0 ? "0 0 0 green" : "0 0 2vh red"};
   :focus {
-    box-shadow: ${props=>props.name.length>0?"0 0 2vh green":"0 0 2vh red"};
+    box-shadow: ${(props) =>
+      props.name.length > 0 ? "0 0 2vh green" : "0 0 2vh red"};
   }
   :hover {
-    box-shadow: ${props=>props.name.length>0?"0 0 2vh green":"0 0 2vh red"};
+    box-shadow: ${(props) =>
+      props.name.length > 0 ? "0 0 2vh green" : "0 0 2vh red"};
   }
 `;
 
