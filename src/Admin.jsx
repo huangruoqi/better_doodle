@@ -2,7 +2,7 @@ import sheetdb from "sheetdb-node";
 import styled from "styled-components";
 import * as React from "react";
 import Button from "./Button";
-import { getActiveElement } from "@testing-library/user-event/dist/utils";
+import { mobile, getTime } from "./utils";
 
 var config = {
   address: "ju33yniko75pk",
@@ -18,10 +18,6 @@ for (let i = 0; i < 7; i++) {
   day2date.push(current.toLocaleDateString("en-US", "America/Los_Angeles"));
   current.setDate(current.getDate() + 1);
 }
-function getTime(index) {
-  return `${Math.floor(index / 2)}:${index % 2 === 0 ? "00" : "30"}`;
-}
-
 function getDate(date) {
   const current = new Date();
   for (let i = 0; i < 7; i++) {

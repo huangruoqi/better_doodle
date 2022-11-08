@@ -3,6 +3,7 @@ import styled from "styled-components";
 import * as React from "react";
 import Button from "./Button";
 import Circle from "./Circle";
+import { mobile, getTime } from "./utils";
 
 var config = {
   address: "ju33yniko75pk",
@@ -19,9 +20,6 @@ for (let i = 0; i < 7; i++) {
   current.setDate(current.getDate() + 1);
 }
 
-function getTime(index) {
-  return `${Math.floor(index / 2)}:${index % 2 === 0 ? "00" : "30"}`;
-}
 function constructOutput(m, name) {
   const output = [];
   let start = 0;
@@ -47,6 +45,15 @@ const Home = () => {
   const [timeRanges, setTimeRanges] = React.useState(
     new Array(7).fill(0).map((e, i) => new Array(49).fill(0))
   );
+    const [matches, setMatches] = React.useState(
+        window.matchMedia(mobile).matches
+    )
+React.useEffect(() => {
+    window
+    .matchMedia(mobile)
+    .addEventListener('change', e => setMatches( e.matches ));
+  }, []);
+
   const [select, setSelect] = React.useState(-1);
   const chooseTime = (date, time) => {
     const num = date * 49 + time;
@@ -123,7 +130,7 @@ const Home = () => {
   return (
     <MainContainer>
       <DAYS ranges={timeRanges} setRange={setTimeRanges} />
-      <TIME ranges={timeRanges} select={select} chooseTime={chooseTime} />
+      <TIME ranges={timeRanges} select={select} chooseTime={chooseTime} isMobile={matches}/>
       <SUBMIT submitSchedule={submitSchedule} />
     </MainContainer>
   );
@@ -201,6 +208,9 @@ const SubmitInput = styled.input`
     box-shadow: ${(props) =>
       props.name.length > 0 ? "0 0 2vh green" : "0 0 2vh red"};
   }
+@media ${mobile} {
+  width: 30vw;
+}
 `;
 
 const MainContainer = styled.div`
@@ -225,7 +235,7 @@ const DAYS = ({ setRange, ranges }) => {
   );
 };
 
-const TIME = ({ select, ranges, chooseTime }) => {
+const TIME = ({ select, ranges, chooseTime, isMobile }) => {
   return (
     <TimeContainer>
       {new Array(49).fill(0).map((e1, i1) => (
@@ -245,6 +255,7 @@ const TIME = ({ select, ranges, chooseTime }) => {
                 select={select}
                 ranges={ranges}
                 chooseTime={chooseTime}
+                isMobile={isMobile}
               />
             )
           )}
@@ -285,6 +296,13 @@ const TimeLabel = styled.div`
     align-items: center;
     display: flex;
     box-shadow: 0 0 0.7vh #55987c;
+@media ${mobile} {
+    border-top-right-radius: 0;
+    border-bottom-left-radius: 0;
+    border-radius: 100px;
+    font-size: 2.5vw;
+    max-width: 10vw;
+}
   }
 `;
 
@@ -300,12 +318,17 @@ const TimeItemDIV = styled.div`
     height: 2vh;
     display: flex;
     background-color: #44a37a51;
+    @media ${mobile} {
+    width: 3vw;
+    height: 3vw;
+    }
   }
   .time_div:hover {
     cursor: pointer;
   }
+
 `;
-const TimeItem = ({ date, time, select, ranges, chooseTime }) => {
+const TimeItem = ({ date, time, select, ranges, chooseTime, isMobile }) => {
   const i2 = date;
   const i1 = time;
   const [hovered, setHovered] = React.useState(false);
@@ -336,7 +359,7 @@ const TimeItem = ({ date, time, select, ranges, chooseTime }) => {
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
       >
-        {(hovered || index === select || status > 1) && (
+        {((!isMobile && hovered) || index === select || status > 1) && (
           <TimeStamp>{getTime(i1)}</TimeStamp>
         )}
       </div>
@@ -356,6 +379,14 @@ const TimeStamp = styled.div`
   font-size: 1.3vh;
   font-weight: 900;
   transform: translate(2.7vh, -0.5vh);
+
+    @media ${mobile} {
+  border-radius: 1.5vw;
+  font-size: 1.8vw;
+  width: 5vw;
+  height: 3vw;
+  transform: translate(3.6vw, 0vw);
+    }
 `;
 
 const DaysContainer = styled.div`
@@ -407,20 +438,36 @@ const ItemContainer = styled.div`
     box-shadow: 0 0 3vh dodgerblue;
     transition: 0.5s;
   }
+
+@media ${mobile} {
+  width: 10vw;
+  height: 10vw;
+}
 `;
 
 const EmptyContainer = styled.div`
   width: 10vh;
   height: 10vh;
   margin: 0.5vh;
+@media ${mobile} {
+  width: 10vw;
+  height: 10vw;
+}
 `;
 
 const DateContainer = styled.div`
-  font-size: small;
+  font-size: 1.4vh;
+@media ${mobile} {
+    font-size: 1.5vw;
+}
+
 `;
 const DayContainer = styled.div`
   font-weight: bold;
-  font-size: x-large;
+  font-size: 3vh;
+@media ${mobile} {
+    font-size: 3vw;
+}
 `;
 
 export default Home;

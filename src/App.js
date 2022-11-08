@@ -7,6 +7,7 @@ import {
 import Home from './Home'
 import Admin from './Admin'
 import * as React from "react";
+import { mobile } from './utils'
 
 
 function App() {
@@ -43,16 +44,21 @@ const Background = styled.div`
   align-items: center;
 `
 const MainContainer = styled.div`
-  width:80%;
-  height:85%;
-  display: flex;
-  justify-content: center;
-  align-items: center; 
-  flex-direction: column;
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    flex-direction: column;
+    width: 80%;
+    @media ${mobile} {
+        width:90%;
+    }
 `
 const Title = styled.h1`
   font-size: 8vh;
   color: #fff;
+    @media ${mobile} {
+        font-size: 6vw;
+    }
 `
 
 const NavContainer = styled.div`
@@ -66,6 +72,12 @@ const Navbar = styled.div`
   align-items: center;
   padding-top: 2.5vh;
   padding-left: 10vh;
+  font-size: 2vh;
+@media ${mobile} {
+    padding-top: 0;
+    padding-left: 10vw;
+  font-size: 2.7vw;
+}
 `
 const NavItem = styled.div`
   margin: 5px;
