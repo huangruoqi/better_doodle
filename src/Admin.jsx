@@ -100,7 +100,7 @@ const Admin = () => {
     <MainContainer>
       <DAYS />
       <TIME table={table} data={data} />
-      <div style={{padding:"2vh"}}>
+      <div style={{padding:"2vh", alignSelf:'center'}}>
       <Button
         onClick={refresh}
         text="↺"
@@ -119,25 +119,45 @@ const SummaryContainer = styled.div`
   background-color: #aaaaaa4b;
   border-radius: 3vh;
   flex-direction: column;
+  align-self:center;
+  @media ${mobile} {
+    width: 90vw;
+    height: 40vw;
+  border-radius: 3vw;
+  }
 `
 
 const SummaryRow = styled.div`
+  font-size: 2vh;
   width: 100%;
   height: 3vh;
   margin-top: 0.5vh;
   margin-bottom: 0.5vh;
   border-radius: 0.8vh;
   display: flex;
+  @media ${mobile} {
+    height: 5vw;
+    margin-top: 0.5vw;
+    margin-bottom: 0.5vw;
+    border-radius: 0.8vw;
+    font-size: 3vw;
+  }
 `
 const SummaryItem = styled.div`
   width: 12vh;
-  margin-left: 0.5vh;
   margin-right: 0.5vh;
   background-color: #2c7fa8;
   display: flex;
   justify-content: center;
   align-items: center;
   border-radius: 1vh;
+  font-size: 2vh;
+  @media ${mobile} {
+    width: 14vw;
+    font-size: 2.5vw;
+    margin-right: 1vw;
+    border-radius: 1vw;
+  }
 `
 
 const SUMMARY = ({table, data}) => {
@@ -193,7 +213,6 @@ const MainContainer = styled.div`
   height: 100%;
   display: flex;
   justify-content: center;
-  align-items: center;
   flex-direction: column;
 `;
 
@@ -225,6 +244,11 @@ const TIME = ({ table, data }) => {
 const TimeContainer = styled.div`
   display: flex;
   flex-direction: column;
+  width:88vh;
+  @media ${mobile} {
+    width: 88vw;
+  }
+  align-self: center;
 `;
 
 const TimeRowDIV = styled.div`
@@ -232,6 +256,9 @@ const TimeRowDIV = styled.div`
   height: 3.5vh;
   display: flex;
   justify-content: center;
+  @media ${mobile} {
+    height: 12vw;
+  }
 `;
 
 const TimeLabel = styled.div`
@@ -242,8 +269,9 @@ const TimeLabel = styled.div`
   justify-content: center;
   align-items: center;
   div {
-    width: 100%;
-    height: 100%;
+    position: absolute;
+    width: 10vh;
+    height: 3vh;
     border-top-right-radius: 50%;
     border-bottom-left-radius: 50%;
     font-size: 1.5vh;
@@ -253,7 +281,24 @@ const TimeLabel = styled.div`
     align-items: center;
     display: flex;
     box-shadow: 0 0 0.7vh #55987c;
+
+    
+@media ${mobile} {
+    border-top-right-radius: 0;
+    border-bottom-left-radius: 0;
+    border-radius: 10px;
+    font-size: 2.5vw;
+    width: 16vw;
+
+    height: 10vw;
+    transform: translate(-3vw);
+}
+
   }
+@media ${mobile} {
+  margin: 1vw;
+  min-width: 10vw;
+}
 `;
 
 const TimeRow = ({ name, table }) => {
@@ -314,7 +359,7 @@ const DayItem = ({ e, i }) => {
 };
 
 const ItemContainer = styled.div`
-  width: 10vh;
+  min-width: 10vh;
   height: 10vh;
   background-color: dodgerblue;
   margin: 0.5vh;
@@ -324,20 +369,43 @@ const ItemContainer = styled.div`
   align-items: center;
   flex-direction: column;
   box-shadow: 0 0 1vh dodgerblue;
+  cursor: pointer;
+  :hover {
+    box-shadow: 0 0 3vh dodgerblue;
+    transition: 0.5s;
+  }
+
+@media ${mobile} {
+  min-width: 10vw;
+  height: 10vw;
+  margin: 0.5vw;
+}
 `;
 
 const EmptyContainer = styled.div`
-  width: 10vh;
+  min-width: 10vh;
   height: 10vh;
   margin: 0.5vh;
+@media ${mobile} {
+  min-width: 10vw;
+  height: 10vw;
+}
 `;
 
 const DateContainer = styled.div`
-  font-size: small;
+  font-size: 1.4vh;
+@media ${mobile} {
+    font-size: 1.5vw;
+}
+
 `;
 const DayContainer = styled.div`
   font-weight: bold;
-  font-size: x-large;
+  font-size: 3vh;
+@media ${mobile} {
+    font-size: 3vw;
+}
 `;
 
 export default Admin;
+
