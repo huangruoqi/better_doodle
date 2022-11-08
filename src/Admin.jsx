@@ -2,6 +2,7 @@ import sheetdb from "sheetdb-node";
 import styled from "styled-components";
 import * as React from "react";
 import Button from "./Button";
+import { getActiveElement } from "@testing-library/user-event/dist/utils";
 
 var config = {
   address: "ju33yniko75pk",
@@ -16,6 +17,9 @@ const current = new Date();
 for (let i = 0; i < 7; i++) {
   day2date.push(current.toLocaleDateString("en-US", "America/Los_Angeles"));
   current.setDate(current.getDate() + 1);
+}
+function getTime(index) {
+  return `${Math.floor(index / 2)}:${index % 2 === 0 ? "00" : "30"}`;
 }
 
 function getDate(date) {
@@ -32,6 +36,30 @@ function getDate(date) {
 
 const Admin = () => {
   const [data, setData] = React.useState([])
+
+  const table = new Array(data.length).fill(0).map(()=>new Array(8).fill(0).map(()=>new Array(48).fill(0)))
+  for (let i = 0; i < data.length; i++) {
+    const output = new Array(8).fill(0).map(() => ([]))
+    const ranges = data[i].ranges
+    for (let j = 0; j < ranges.length; j++) { output[ranges[j].date] = [...ranges[j].time] }
+    for (let j = 0; j < output.length; j++) {
+      const time = output[j]
+      for (let t = 0; t < time.length; t++) {
+        for (let k = parseInt(time[t][0]); k < parseInt(time[t][1]); k++) { table[i][j][k] = 1 }
+      }
+    }
+  }
+  if (data.length!==0 && table.length===data.length) {
+    const summary = new Array(8).fill(0).map(()=>new Array(48).fill(1))
+    for (let i = 0; i < table.length; i++) {
+      for (let j = 0; j < 8; j++) {
+        for (let k = 0; k < 48; k++) {
+          if (table[i][j][k]===0) summary[j][k]=0
+        }
+      }
+    }
+    table.push(summary)
+  }
 
   const refresh = () => {
     client.read().then(function (res) {
@@ -69,17 +97,94 @@ const Admin = () => {
   return (
     <MainContainer>
       <DAYS />
-      <TIME data={data} />
-      <div style={{paddingTop:"2vh"}}>
+      <TIME table={table} data={data} />
+      <div style={{padding:"2vh"}}>
       <Button
         onClick={refresh}
         text="↺"
       >
       </Button>
       </div>
+      <SUMMARY table={table} data={data} />
     </MainContainer>
   );
 };
+
+const SummaryContainer = styled.div`
+  width: 90vh;
+  height: 28vh;
+  display: flex;
+  background-color: #aaaaaa4b;
+  border-radius: 3vh;
+  flex-direction: column;
+`
+
+const SummaryRow = styled.div`
+  width: 100%;
+  height: 3vh;
+  margin-top: 0.5vh;
+  margin-bottom: 0.5vh;
+  border-radius: 0.8vh;
+  display: flex;
+`
+const SummaryItem = styled.div`
+  width: 12vh;
+  margin-left: 0.5vh;
+  margin-right: 0.5vh;
+  background-color: #2c7fa8;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 1vh;
+`
+
+const SUMMARY = ({table, data}) => {
+  if (table.length === data.length) {
+    return <></>
+  }
+  const summary = table[table.length-1]
+
+  const constructRanges = m => {
+    const ranges = []
+    let left = -1
+    for (let i = 0 ; i < m.length; i++) {
+      if (left<0 && m[i]===1) { left = i }
+      else if (left>=0 && m[i]===0) {
+        ranges.push([left, i])
+        left = -1
+      }
+      if (i===m.length-1&&m[i]===1){
+        ranges.push([left, 48])
+      }
+    }
+    return ranges
+  }
+  
+  return (
+    <SummaryContainer key={-1}>
+      {summary.map((e1, i1) => {
+        const ranges = constructRanges(e1)
+        return (
+          i1===0?<div key={1000}></div>:
+          <SummaryRow key={i1}>
+            <div 
+              style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: '#52cf67ba',
+              width: '12vh',
+              borderRadius: '2vh',
+              marginLeft: '1vh',
+              marginRight: '2vh'
+            }} >{day2date[i1]}</div>
+            {ranges.map((e2, i2) => <SummaryItem key={i1*7+i2}>{getTime(e2[0])+'~'+getTime(e2[1])}</SummaryItem>)}
+          </SummaryRow>
+          )}
+      )}
+    </SummaryContainer>
+  )
+}
 
 const MainContainer = styled.div`
   width: 100%;
@@ -104,31 +209,7 @@ const DAYS = () => {
   );
 };
 
-const TIME = ({ data }) => {
-  const table = new Array(data.length).fill(0).map(()=>new Array(8).fill(0).map(()=>new Array(48).fill(0)))
-  for (let i = 0; i < data.length; i++) {
-    const output = new Array(8).fill(0).map(() => ([]))
-    const ranges = data[i].ranges
-    for (let j = 0; j < ranges.length; j++) { output[ranges[j].date] = [...ranges[j].time] }
-    for (let j = 0; j < output.length; j++) {
-      const time = output[j]
-      for (let t = 0; t < time.length; t++) {
-        for (let k = parseInt(time[t][0]); k < parseInt(time[t][1]); k++) { table[i][j][k] = 1 }
-      }
-    }
-  }
-
-  if (data.length!==0) {
-    const summary = new Array(8).fill(0).map(()=>new Array(48).fill(1))
-    for (let i = 0; i < table.length; i++) {
-      for (let j = 0; j < 8; j++) {
-        for (let k = 0; k < 48; k++) {
-          if (table[i][j][k]===0) summary[j][k]=0
-        }
-      }
-    }
-    table.push(summary)
-  }
+const TIME = ({ table, data }) => {
 
   return (
     <TimeContainer>
@@ -165,7 +246,7 @@ const TimeLabel = styled.div`
     border-bottom-left-radius: 50%;
     font-size: 1.5vh;
     font-weight: bold;
-    background-color: #44a37a;
+    background-color: ${props=>props.color};
     justify-content: center;
     align-items: center;
     display: flex;
@@ -178,9 +259,9 @@ const TimeRow = ({ name, table }) => {
     <TimeRowDIV>
       {table.map((e, i) =>
         i === 0 ? (
-          <TimeLabel key={i}><div>{name}</div></TimeLabel>
+          <TimeLabel key={i} color={name==="SUMMARY"?"#2e99c0":"#44a37a"}><div>{name}</div></TimeLabel>
         ) : (
-          <TimeItem table={e} key={i} />
+          <TimeItem table={e} key={i} color={name==="SUMMARY"?"#2e99c0":"#44a37aa1"} />
         )
       )}
     </TimeRowDIV>
@@ -197,18 +278,18 @@ const TimeItemDIV = styled.div`
   align-items: center;
   background-color: #afbcb730;
 `;
-const TimeItem = ({ table }) => {
+const TimeItem = ({ table, color }) => {
   return (
     <TimeItemDIV>
-      {table.map((e, i) => <TimeSegment key={i} available={e} />)}
+      {table.map((e, i) => <TimeSegment color={color} key={i} available={e} />)}
     </TimeItemDIV>
   )
 }
 
-const TimeSegment = ({ available }) => {
+const TimeSegment = ({ available, color }) => {
     return(
     <div style={{
-      flex: 1, backgroundColor: available ? '#44a37a51' : 'transparent', height: "100%"
+      flex: 1, backgroundColor: available ? color : 'transparent', height: "100%"
     }} ></div>
   )
 }
@@ -241,11 +322,6 @@ const ItemContainer = styled.div`
   align-items: center;
   flex-direction: column;
   box-shadow: 0 0 1vh dodgerblue;
-  cursor: pointer;
-  :hover {
-    box-shadow: 0 0 3vh dodgerblue;
-    transition: 0.5s;
-  }
 `;
 
 const EmptyContainer = styled.div`
