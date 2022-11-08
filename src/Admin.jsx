@@ -287,7 +287,7 @@ const TimeLabel = styled.div`
     border-top-right-radius: 0;
     border-bottom-left-radius: 0;
     border-radius: 10px;
-    font-size: 2.5vw;
+    font-size: 2.2vw;
     width: 16vw;
 
     height: 10vw;
