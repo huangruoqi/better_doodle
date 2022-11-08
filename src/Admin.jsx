@@ -33,6 +33,12 @@ function getDate(date) {
   }
   return 0
 }
+function getName(n) {
+  if (n.length>12) {
+    return n.substring(0, 9)+'...'
+  }
+  return n
+}
 
 const Admin = () => {
   const [data, setData] = React.useState([])
@@ -214,7 +220,7 @@ const TIME = ({ table, data }) => {
   return (
     <TimeContainer>
       {table.map((e, i) => (
-        <TimeRow key={i} index={i} table={e} name={data[i]?.name||"SUMMARY"} />
+        <TimeRow key={i} index={i} table={e} name={getName(data[i]?.name||"SUMMARY")} />
       ))}
     </TimeContainer>
   );
