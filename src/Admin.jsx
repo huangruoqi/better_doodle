@@ -1,13 +1,7 @@
-import sheetdb from "sheetdb-node";
 import styled from "styled-components";
 import * as React from "react";
 import Button from "./Button";
 import { mobile, getTime } from "./utils";
-
-var config = {
-  address: "ju33yniko75pk",
-};
-var client = sheetdb(config);
 
 const date = new Date();
 const day = date.getDay();
@@ -18,17 +12,6 @@ for (let i = 0; i < 7; i++) {
   day2date.push(current.toLocaleDateString("en-US", "America/Los_Angeles"));
   current.setDate(current.getDate() + 1);
 }
-function getDate(date) {
-  const current = new Date();
-  for (let i = 0; i < 7; i++) {
-    const s = current.toLocaleDateString("en-US", "America/Los_Angeles")
-    if (s===date.substring(1)) {
-      return i+1
-    }
-    current.setDate(current.getDate() + 1);
-  }
-  return 0
-}
 function getName(n) {
   if (n.length>12) {
     return n.substring(0, 9)+'...'
@@ -36,8 +19,7 @@ function getName(n) {
   return n
 }
 
-const Admin = () => {
-  const [data, setData] = React.useState([])
+const Admin = ({data, refresh}) => {
 
   const table = new Array(data.length).fill(0).map(()=>new Array(8).fill(0).map(()=>new Array(48).fill(0)))
   for (let i = 0; i < data.length; i++) {
@@ -63,38 +45,6 @@ const Admin = () => {
     table.push(summary)
   }
 
-  const refresh = () => {
-    client.read().then(function (res) {
-      const table = {}
-      res = JSON.parse(res)
-      for (let i = 0 ; i < res.length; i++) { if (table[res[i]["name"]]===undefined) table[res[i]["name"]] = {} }
-      for (let i = 0 ; i < res.length; i++) { if (table[res[i]["name"]][res[i]["time"]]===undefined) table[res[i]["name"]][res[i]["time"]] = {} }
-      for (let i = 0 ; i < res.length; i++) { if (table[res[i]["name"]][res[i]["time"]][res[i]["date"]]===undefined) table[res[i]["name"]][res[i]["time"]][res[i]["date"]] = []}
-      for (let i = 0 ; i < res.length; i++) { table[res[i]["name"]][res[i]["time"]][res[i]["date"]].push([res[i]["from"], res[i]["to"]]) }
-
-      const output = {}
-
-      for (const name in table) {
-        for (const time in table[name]) {
-          const ranges = []
-          for (const date in table[name][time]) {
-            const d = getDate(date)
-            if (d>0) ranges.push({date: d, time: table[name][time][date]})
-          }
-          if (output[name]===undefined) { output[name] = [] }
-          output[name].push({time: time, name: name, ranges: ranges})
-        }
-      }
-      const final = []
-      for (const name in output) {
-        output[name].sort((a,b) => Date.parse(b.time) - Date.parse(a.time))
-        final.push(output[name][0])
-      }
-      setData(final)
-    }, function (error) {
-      console.log(error);
-    });
-  }
 
   return (
     <MainContainer>
@@ -287,7 +237,7 @@ const TimeLabel = styled.div`
     border-top-right-radius: 0;
     border-bottom-left-radius: 0;
     border-radius: 10px;
-    font-size: 2.2vw;
+    font-size: 2.n2vw;
     width: 16vw;
 
     height: 10vw;
