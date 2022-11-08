@@ -381,11 +381,11 @@ const TimeStamp = styled.div`
   transform: translate(2.7vh, -0.5vh);
 
     @media ${mobile} {
-  border-radius: 1.5vw;
-  font-size: 1.8vw;
+  border-radius: 1vw;
+  font-size: 1.6vw;
   width: 5vw;
   height: 3vw;
-  transform: translate(3.6vw, 0vw);
+  transform: translate(4vw, 0vw);
     }
 `;
 

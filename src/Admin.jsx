@@ -153,8 +153,8 @@ const SummaryItem = styled.div`
   border-radius: 1vh;
   font-size: 2vh;
   @media ${mobile} {
-    width: 14vw;
-    font-size: 2.5vw;
+    width: 15vw;
+    font-size: 2.4vw;
     margin-right: 1vw;
     border-radius: 1vw;
   }
@@ -198,7 +198,7 @@ const SUMMARY = ({table, data}) => {
               width: '12vh',
               borderRadius: '2vh',
               marginLeft: '1vh',
-              marginRight: '2vh'
+              marginRight: '1vh'
             }} >{day2date[i1]}</div>
             {ranges.map((e2, i2) => <SummaryItem key={i1*7+i2}>{getTime(e2[0])+'~'+getTime(e2[1])}</SummaryItem>)}
           </SummaryRow>
