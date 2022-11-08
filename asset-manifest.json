@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/better_doodle/static/css/main.3231b999.css",
-    "main.js": "/better_doodle/static/js/main.ce043cda.js",
+    "main.js": "/better_doodle/static/js/main.4d27dfa8.js",
     "static/js/787.76accfa0.chunk.js": "/better_doodle/static/js/787.76accfa0.chunk.js",
     "index.html": "/better_doodle/index.html",
     "main.3231b999.css.map": "/better_doodle/static/css/main.3231b999.css.map",
-    "main.ce043cda.js.map": "/better_doodle/static/js/main.ce043cda.js.map",
+    "main.4d27dfa8.js.map": "/better_doodle/static/js/main.4d27dfa8.js.map",
     "787.76accfa0.chunk.js.map": "/better_doodle/static/js/787.76accfa0.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.3231b999.css",
-    "static/js/main.ce043cda.js"
+    "static/js/main.4d27dfa8.js"
   ]
 }
