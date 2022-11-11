@@ -13,15 +13,14 @@ for (let i = 0; i < 7; i++) {
   current.setDate(current.getDate() + 1);
 }
 function getName(n) {
-  if (n.length>12) {
-    return n.substring(0, 9)+'...'
+  if (n.length > 12) {
+    return n.substring(0, 9) + '...'
   }
   return n
 }
 
-const Admin = ({data, refresh}) => {
-
-  const table = new Array(data.length).fill(0).map(()=>new Array(8).fill(0).map(()=>new Array(48).fill(0)))
+const Admin = ({ data, refresh }) => {
+  const table = new Array(data.length).fill(0).map(() => new Array(8).fill(0).map(() => new Array(48).fill(0)))
   for (let i = 0; i < data.length; i++) {
     const output = new Array(8).fill(0).map(() => ([]))
     const ranges = data[i].ranges
@@ -33,31 +32,41 @@ const Admin = ({data, refresh}) => {
       }
     }
   }
-  if (data.length!==0 && table.length===data.length) {
-    const summary = new Array(8).fill(0).map(()=>new Array(48).fill(1))
+  const calculate = (v) => {
+    if (table.length === 0) return null
+    const s = new Array(8).fill(0).map(() => new Array(48).fill(true))
     for (let i = 0; i < table.length; i++) {
+      if (!v[i]) continue
       for (let j = 0; j < 8; j++) {
         for (let k = 0; k < 48; k++) {
-          if (table[i][j][k]===0) summary[j][k]=0
+          if (!table[i][j][k]) s[j][k] = false
         }
       }
     }
-    table.push(summary)
+    return s
   }
-
+  const [visible, setVisible] = React.useState([])
+  const [summary, setSummary] = React.useState(null)
+  React.useEffect(() => {
+    setVisible(new Array(data.length).fill(true))
+  }, [data])
+  React.useEffect(() => {
+    setSummary(calculate(visible))
+  }, [visible])
 
   return (
     <MainContainer>
       <DAYS />
-      <TIME table={table} data={data} />
-      <div style={{padding:"2vh", alignSelf:'center'}}>
-      <Button
-        onClick={refresh}
-        text="↺"
-      >
-      </Button>
+      <TIME table={table} data={data} summary={summary} setVisible={setVisible}
+        visible={visible} />
+      <div style={{ padding: "2vh", alignSelf: 'center' }}>
+        <Button
+          onClick={() => { refresh() }}
+          text="↺"
+        >
+        </Button>
       </div>
-      <SUMMARY table={table} data={data} />
+      <SUMMARY visible={visible} summary={summary} data={data} />
     </MainContainer>
   );
 };
@@ -110,49 +119,46 @@ const SummaryItem = styled.div`
   }
 `
 
-const SUMMARY = ({table, data}) => {
-  if (table.length === data.length) {
-    return <></>
-  }
-  const summary = table[table.length-1]
-
+const SUMMARY = ({ summary }) => {
+  if (!summary) return <></>
   const constructRanges = m => {
     const ranges = []
     let left = -1
-    for (let i = 0 ; i < m.length; i++) {
-      if (left<0 && m[i]===1) { left = i }
-      else if (left>=0 && m[i]===0) {
+    for (let i = 0; i < m.length; i++) {
+      if (left < 0 && m[i]) { left = i }
+      else if (left >= 0 && !m[i]) {
         ranges.push([left, i])
         left = -1
       }
-      if (i===m.length-1&&m[i]===1){
+      if (i === m.length - 1 && m[i]) {
         ranges.push([left, 48])
       }
     }
     return ranges
   }
-  
+
   return (
     <SummaryContainer key={-1}>
       {summary.map((e1, i1) => {
         const ranges = constructRanges(e1)
         return (
-          i1===0?<div key={1000}></div>:
-          <SummaryRow key={i1}>
-            <div 
-              style={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              backgroundColor: '#52cf67ba',
-              width: '12vh',
-              borderRadius: '2vh',
-              marginLeft: '1vh',
-              marginRight: '1vh'
-            }} >{day2date[i1]}</div>
-            {ranges.map((e2, i2) => <SummaryItem key={i1*7+i2}>{getTime(e2[0])+'~'+getTime(e2[1])}</SummaryItem>)}
-          </SummaryRow>
-          )}
+          i1 === 0 ? <div key={1000}></div> :
+            <SummaryRow key={i1}>
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: '#52cf67ba',
+                  width: '12vh',
+                  borderRadius: '2vh',
+                  marginLeft: '1vh',
+                  marginRight: '1vh'
+                }} >{day2date[i1]}</div>
+              {ranges.map((e2, i2) => <SummaryItem key={i1 * 7 + i2}>{getTime(e2[0]) + '~' + getTime(e2[1])}</SummaryItem>)}
+            </SummaryRow>
+        )
+      }
       )}
     </SummaryContainer>
   )
@@ -180,13 +186,23 @@ const DAYS = () => {
   );
 };
 
-const TIME = ({ table, data }) => {
-
+const TIME = ({ table, data, setVisible, summary, visible }) => {
   return (
     <TimeContainer>
       {table.map((e, i) => (
-        <TimeRow key={i} index={i} table={e} name={getName(data[i]?.name||"SUMMARY")} />
+        <TimeRow key={i} table={e} summary={null} name={getName(data[i].name)}
+          setVisible={() => {
+            const v = [...visible]
+            v[i] = !v[i]
+            setVisible(v)
+          }}
+          included={visible.length > 0 ? visible[i] : true}
+        />
       ))}
+      <TimeRow key={-1} table={table} summary={summary} name="SUMMARY"
+        setVisible={() => { }}
+        included={true}
+      />
     </TimeContainer>
   );
 };
@@ -226,18 +242,22 @@ const TimeLabel = styled.div`
     border-bottom-left-radius: 50%;
     font-size: 1.5vh;
     font-weight: bold;
-    background-color: ${props=>props.color};
+    background-color: ${props => props.color};
     justify-content: center;
     align-items: center;
     display: flex;
-    box-shadow: 0 0 0.7vh #55987c;
+    box-shadow: 0 0 0.3vh #55987c;
+    :hover {
+      cursor: pointer;
+      box-shadow: 0 0 2vh #55987c;
+    }
 
     
 @media ${mobile} {
     border-top-right-radius: 0;
     border-bottom-left-radius: 0;
     border-radius: 10px;
-    font-size: 2.n2vw;
+    font-size: 2.2vw;
     width: 16vw;
 
     height: 10vw;
@@ -251,16 +271,22 @@ const TimeLabel = styled.div`
 }
 `;
 
-const TimeRow = ({ name, table }) => {
+const TimeRow = ({ included, name, table, summary, setVisible }) => {
+  const m = summary ? [...summary] : [...table]
   return (
     <TimeRowDIV>
-      {table.map((e, i) =>
-        i === 0 ? (
-          <TimeLabel key={i} color={name==="SUMMARY"?"#2e99c0":"#44a37a"}><div>{name}</div></TimeLabel>
+      {m.map((e, i) => {
+        let color = name === "SUMMARY" ? "#2e99c0" : "#44a37a"
+        if (!included) {
+          color = "#888888"
+        }
+        return i === 0 ? (
+          <TimeLabel key={i} color={color}><div onClick={name !== "SUMMARY" ? () => setVisible() : () => { }}>{name}</div></TimeLabel>
         ) : (
-          <TimeItem table={e} key={i} color={name==="SUMMARY"?"#2e99c0":"#44a37aa1"} />
+          <TimeItem table={e} key={i} color={color + "c1"} />
         )
-      )}
+      })
+      }
     </TimeRowDIV>
   );
 };
@@ -284,7 +310,7 @@ const TimeItem = ({ table, color }) => {
 }
 
 const TimeSegment = ({ available, color }) => {
-    return(
+  return (
     <div style={{
       flex: 1, backgroundColor: available ? color : 'transparent', height: "100%"
     }} ></div>
